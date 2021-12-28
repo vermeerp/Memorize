@@ -7,21 +7,20 @@
 
 import SwiftUI
 
-//let vehicleEmojis = ["🚍", "🚜", "🚝", "⛵️","🏍","🚡",
-//                     "🛴","🚃", "🚒","🛻","✈️","🛶",
-//                     "🚁","🚀","🚂","🛳"]
-//let weatherEmojis = ["🌪", "🌈", "☀️", "🌤", "⛅️", "🌦",
-//                     "🌨", "❄️", "☁️", "🌊", "💨", "☔️"]
-//let sportsEmojis = ["⚽️", "🏀", "🏈", "⚾️", "🥎", "🏐",
-//                    "🥏", "🏸", "🏒", "🏑", "🥍", "🏏",
-//                    "🪃", "⛳️", "🥊", "🥌", "🛼", "⛸"]
-
 struct ContentView: View {
     
     @ObservedObject var viewModel: EmojiMemoryGame
+    
     var body: some View {
         VStack {
             ScrollView {
+                HStack {
+                    Image(systemName: viewModel.symbol)
+                    Text(viewModel.title)
+                        .font(.title)
+                    Image(systemName: viewModel.symbol)
+                    
+                }
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
                     ForEach(viewModel.cards){ card in
                         CardView(card: card)
@@ -32,9 +31,19 @@ struct ContentView: View {
                     }
                 }
             }
-            .foregroundColor(.red)
+            Spacer()
+            HStack {
+                newGame
+                Spacer()
+                Text("Score: ")
+            }
+            .padding(.horizontal)
+            .font(.largeTitle)
+            Spacer()
         }
+        .foregroundColor(viewModel.themeColor)
         .padding(.horizontal)
+        
     }
     
     struct CardView: View {
@@ -56,14 +65,25 @@ struct ContentView: View {
         
         }
     }
+
+    var newGame: some View {
+        Button{
+            viewModel.resetGame()
+        } label: {
+            VStack {
+                Image(systemName: "plus.circle")
+                Text("New Game").font(.footnote)
+            }
+        }
+    }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let game = EmojiMemoryGame()
-        
         ContentView(viewModel: game)
-            .preferredColorScheme(.light)
+            .preferredColorScheme(.dark)
     }
 }
 
